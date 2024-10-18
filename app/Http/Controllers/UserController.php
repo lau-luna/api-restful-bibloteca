@@ -267,4 +267,27 @@ class UserController extends Controller
 
         return response()->json($data, $data['code']);
     }
+
+    public function destroy($id) {
+        $user = User::find($id);
+
+        if (!empty($user)){
+            $user->delete();
+
+            $data = [
+                'code'       => 200,
+                'status'     => 'succes',
+                'message'    => 'Se ha eliminado el usuario.',
+                'category'   => $user
+            ];
+        }else{
+            $data = [
+                'code'       => 404,
+                'status'     => 'error',
+                'message'    => 'No se ha encontrado el usuario.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);
+    }
 }

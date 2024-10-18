@@ -26,6 +26,7 @@ use App\Http\Middleware\ApiAuthMiddleware;
 
     Route::middleware([ApiAuthMiddleware::class])->group(function () {
         Route::post('/api/user/upload', [UserController::class, 'upload'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+        Route::delete('/api/user/{id}', [UserController::class, 'destroy'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
 
 
@@ -36,8 +37,8 @@ use App\Http\Middleware\ApiAuthMiddleware;
         Route::resource('/api/category', CategoryController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
     // Rutas sin ApiAuthMiddleware para index y show
-    Route::get('/api/category', [CategoryController::class, 'index']);
-    Route::get('/api/category/{id}', [CategoryController::class, 'show']);
+    Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/category/{id}', [CategoryController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
 
 
     // Rutas del controlador de entradas

@@ -121,4 +121,27 @@ class CategoryController extends Controller
         // Devolver los datos
         return response()->json($data, $data['code']);
     }
+
+    public function destroy($id) {
+        $category = Category::find($id);
+
+        if (!empty($category)){
+            $category->delete();
+
+            $data = [
+                'code'       => 200,
+                'status'     => 'succes',
+                'message'    => 'Se ha eliminado la categoría.',
+                'category'   => $category
+            ];
+        }else{
+            $data = [
+                'code'       => 404,
+                'status'     => 'error',
+                'message'    => 'No se ha encontrado la categoría.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);
+    }
 }
