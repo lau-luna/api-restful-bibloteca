@@ -74,7 +74,7 @@ class UserController extends Controller
         } else {
             $data = array(
                 'status' => 'error',
-                'code' => 404,
+                'code' => 400,
                 'message' => 'Los datos enviados no son correctos'
             );
         }
@@ -171,7 +171,10 @@ class UserController extends Controller
             $data = array(
                 'code' => 400,
                 'status' => 'error',
-                'message' => 'El usuario no está identificado.'
+                'message' => 'El usuario no está identificado.',
+                'errors'    => $checkToken,
+                'json'  =>   $json,
+                'params_array' => $params_array
             );
         }
 
@@ -180,6 +183,10 @@ class UserController extends Controller
 
     public function upload(Request $request)
     {
+        // Comprobar si el usuario esá identificado
+        $token = $request->header('Authorization');
+        $jwtAuth = new JwtAuth();
+        $checkToken = $jwtAuth->checkToken($token);
 
         // Recoger los datos de la petición
         $image = $request->file('file0');
@@ -189,22 +196,33 @@ class UserController extends Controller
             'file0' => 'required|image|mimes:jpg,jpeg,png,gif'
         ]);
 
-
         // Guardar imagen
-        if (!$image || $validate->fails()) {
+        if (!$image || $validate->fails() || !$checkToken) {
             $data = array(
                 'code' => 400,
                 'status' => 'error',
                 'message' => 'Error al subir imagen'
             );
         } else {
+            // Sacar usuario identificado
+            $user = $jwtAuth->checkToken($token, true);
+
             $image_name = time() . $image->getClientOriginalName();
             Storage::disk('users')->put($image_name, File::get($image));
+
+            // Actualizar la  imagen del usuario
+            $params_array = [
+                'image' => $image_name
+            ];
+
+            // Actualizar usuario en BBDD
+            $user_update = User::where('id', $user->sub)->update($params_array);
 
             $data = array(
                 'code'   => 200,
                 'status' => 'success',
-                'image'  => $image_name
+                'image'  => $image_name,
+                'user'   => $user
             );
         }
 
