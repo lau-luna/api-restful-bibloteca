@@ -30,16 +30,16 @@ return new class extends Migration
                 ->on('authors')
                 ->onUpdate('cascade');
             
-            // Clave foránea tabla authors
-            $table->foreign('authors_id')
-                ->references('id')
-                ->on('authors')
-                ->onUpdate('cascade');
-            
             // Clave foránea tabla publishers
             $table->foreign('publisher_id')
                 ->references('id')
                 ->on('publishers')
+                ->onUpdate('cascade');
+
+            // Clave foránea tabla category
+            $table->foreign('category_id')
+                ->references('id')
+                ->on('categories')
                 ->onUpdate('cascade');
         });
     }

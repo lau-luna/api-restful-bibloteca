@@ -17,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('book_id');
             $table->date('loan_date');
             $table->date('due_date');
-            $table->date('return_date');
+            $table->date('return_date')->nullable();
             $table->string('status', 50);
             $table->timestamps();
 
@@ -31,7 +31,7 @@ return new class extends Migration
             // Clave foránea para tabla books
             $table->foreign('book_id')
                 ->references('id')
-                ->on('book')
+                ->on('books')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
