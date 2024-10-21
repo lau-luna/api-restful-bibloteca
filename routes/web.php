@@ -9,6 +9,7 @@ use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PruebasController;
 use App\Http\Middleware\ApiAuthMiddleware; 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PublisherController;
 
 //Rutas del API
     // Rutas de prueba
@@ -49,6 +50,15 @@ use App\Http\Controllers\CategoryController;
     // Rutas sin ApiAuthMiddleware para index y show
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     Route::get('/api/category/{id}', [CategoryController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+
+    //  Rutas del controlador de editoriales
+    Route::middleware([ApiAuthMiddleware::class])->group(function () {
+        // Rutas con ApiAuthMiddleware para todas excepto index y show
+        Route::resource('/api/publisher', PublisherController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    });
+    // Rutas sin ApiAuthMiddleware para index y show
+    Route::get('/api/publisher', [PublisherController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/publisher/{id}', [PublisherController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
 
 
     // Rutas del controlador de entradas
