@@ -86,7 +86,7 @@ class CategoryController extends Controller
 
     public function update($id, Request $request)
     {
-        // Recoger datos por POST
+        // Recoger datos por PUT
         $json = $request->input('json', null);
         $params_array = json_decode($json, true);
 

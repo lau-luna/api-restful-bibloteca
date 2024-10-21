@@ -2,18 +2,21 @@
 
 namespace App\Helpers;
 
-use Firebase\JWT\JWT;
 use App\Models\User;
+use Firebase\JWT\JWT;
+use Illuminate\Http\Request;
 
-class JwtAuth {
+class JwtAuth
+{
     public $key;
 
     public function __construct()
     {
         $this->key = 'esto_es_una_clave_super_secreta-298765171';
     }
-    
-    public function signup($email, $password, $getToken = null) {
+
+    public function signup($email, $password, $getToken = null)
+    {
         // Buscar si existe el usuario con su email
         $user = User::where('email', $email)->first();
 
@@ -25,6 +28,7 @@ class JwtAuth {
                 'email'     => $user->email,
                 'name'      => $user->name,
                 'surname'   => $user->surname,
+                'role'      => $user->role,
                 'iat'       => time(),
                 'exp'       => time() + (7 * 24 * 60 * 60) // 1 semana
             ];
@@ -45,14 +49,15 @@ class JwtAuth {
         return $data;
     }
 
-    public function checkToken($jwt, $getIdentity = false) {
+    public function checkToken($jwt, $getIdentity = false)
+    {
         $auth = false;
         $decoded = null;
 
         try {
             $jwt = str_replace('"', '', $jwt);
             $decoded = JWT::decode($jwt, $this->key, ['HS256']);
-        } catch(\UnexpectedValueException | \DomainException $e) {
+        } catch (\UnexpectedValueException | \DomainException $e) {
             // Manejo de errores opcional
             $auth = false;
         }
@@ -66,5 +71,26 @@ class JwtAuth {
         }
 
         return $auth;
+    }
+
+    public function checkAdmin($jwt)
+    {
+        $isAdmin = false;
+        $decoded = null;
+
+        try {
+            $jwt = str_replace('"', '', $jwt);
+            $decoded = JWT::decode($jwt, $this->key, ['HS256']);
+        } catch (\UnexpectedValueException | \DomainException $e) {
+            // Manejo de errores opcional
+            $isAdmin = false;
+        }
+
+        // Verificar que el objeto decodificado no sea nulo y que tenga la propiedad 'role'
+        if (!empty($decoded) && is_object($decoded) && isset($decoded->sub) && isset($decoded->role) && $decoded->role == "ROLE_ADMIN") {
+            $isAdmin = true;
+        }
+
+        return $isAdmin;
     }
 }

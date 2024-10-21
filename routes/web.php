@@ -5,9 +5,10 @@ use PhpParser\Node\Expr\PostDec;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PruebasController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Middleware\ApiAuthMiddleware; 
+use App\Http\Controllers\CategoryController;
 
 //Rutas del API
     // Rutas de prueba
@@ -29,6 +30,15 @@ use App\Http\Middleware\ApiAuthMiddleware;
         Route::delete('/api/user/{id}', [UserController::class, 'destroy'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
 
+
+    //  Rutas del controlador de Autores
+    Route::middleware([ApiAuthMiddleware::class])->group(function () {
+        // Rutas con ApiAuthMiddleware para todas excepto index y show
+        Route::resource('/api/author', AuthorController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    });
+    // Rutas sin ApiAuthMiddleware para index y show
+    Route::get('/api/author', [AuthorController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/author/{id}', [AuthorController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
 
     
     //  Rutas del controlador de categorias
