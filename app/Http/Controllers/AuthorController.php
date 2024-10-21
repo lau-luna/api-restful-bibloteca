@@ -134,35 +134,61 @@ class AuthorController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Recoger los datos por PUT
-        $json = $request->input('json', null);
-        $params_array = json_decode($json, true);
+        // Comprobar si el usuario es administrador
+        $token = $request->header('Authorization');
+        $jwtAuth = new JwtAuth();
+        $isAdmin = $jwtAuth->checkAdmin($token);
 
-        if (!empty($params_array)) {
-            // Validar los datos
-            $validate = Validator::make($params_array, [
-                'name' => 'required|alpha',
-            ]);
+        if ($isAdmin) {
+            // Recoger los datos por PUT
+            $json = $request->input('json', null);
+            $params_array = json_decode($json, true);
 
-            // Quitar los datos que no necesitamos
-            unset($params_array['id']);
-            unset($params_array['created_at']);
+            if (!empty($params_array)) {
+                // Validar los datos
+                $validate = Validator::make($params_array, [
+                    'name' => 'required|alpha',
+                ]);
 
-            // Actualizar en la base de datos
-            $author = Author::where('id', $id)->update($params_array);
+                // Verificar si el autor existe
+                $author = Author::find($id);
 
-            $data = [
-                'code'       => 200,
-                'status'     => 'success',
-                'author'   => $params_array
-            ];
+                if ($author) {
+                    // Quitar los datos que no necesitamos
+                    unset($params_array['id']);
+                    unset($params_array['created_at']);
+
+                    // Actualizar en la base de datos
+                    $author = Author::where('id', $id)->update($params_array);
+
+                    $data = [
+                        'code'       => 200,
+                        'status'     => 'success',
+                        'author'   => $params_array
+                    ];
+                } else {
+                    $data = [
+                        'code'      => 404,
+                        'status'    => 'error',
+                        'message'   => 'No se encontró el autor.'
+                    ];
+                }
+            } else {
+                $data = [
+                    'code'      => 400,
+                    'status'    => 'error',
+                    'message'   => 'No se ha enviado ningún autor.'
+                ];
+            }
         } else {
+            // Si no es administrador, devolver un mensaje de error
             $data = [
-                'code'      => 400,
+                'code'      => 403,
                 'status'    => 'error',
-                'message'   => 'Error no se ha enviado ningún autor.'
+                'message'   => 'Acceso denegado. No tienes permisos para realizar esta acción.'
             ];
         }
+
 
         return response()->json($data, $data['code']);
     }
@@ -170,29 +196,43 @@ class AuthorController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
+        // Comprobar si el usuario es administrador
+        $token = $request->header('Authorization');
+        $jwtAuth = new JwtAuth();
+        $isAdmin = $jwtAuth->checkAdmin($token);
 
+        if ($isAdmin) {
+            // Sacar autor de la BD
+            $author = Author::find($id);
 
-        // Sacar autor de la BD
-        $author = Author::find($id);
+            if (!empty($author)) {
+                $author->delete();
 
-        if (!empty($author)) {
-            $author->delete();
-
-            $data = [
-                'code'      => 200,
-                'status'    => 'success',
-                'message'   => 'Se ha eliminado el autor.',
-                'author'    => $author
-            ];
+                $data = [
+                    'code'      => 200,
+                    'status'    => 'success',
+                    'message'   => 'Se ha eliminado el autor.',
+                    'author'    => $author
+                ];
+            } else {
+                $data = [
+                    'code'      => 404,
+                    'status'    => 'error',
+                    'message'   => 'No se encontró el autor.'
+                ];
+            }
         } else {
+            // Si no es administrador, devolver un mensaje de error
             $data = [
-                'code'      => 404,
+                'code'      => 403,
                 'status'    => 'error',
-                'message'   => 'No se encontró el autor.'
+                'message'   => 'Acceso denegado. No tienes permisos para realizar esta acción.'
             ];
         }
+
+
 
         return response()->json($data, $data['code']);
     }
