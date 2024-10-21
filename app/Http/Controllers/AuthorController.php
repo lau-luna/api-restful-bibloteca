@@ -232,8 +232,6 @@ class AuthorController extends Controller
             ];
         }
 
-
-
         return response()->json($data, $data['code']);
     }
 }
