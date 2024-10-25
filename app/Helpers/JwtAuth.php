@@ -29,6 +29,7 @@ class JwtAuth
                 'name'      => $user->name,
                 'surname'   => $user->surname,
                 'role'      => $user->role,
+                'telephone' => $user->telephone,
                 'iat'       => time(),
                 'exp'       => time() + (7 * 24 * 60 * 60) // 1 semana
             ];

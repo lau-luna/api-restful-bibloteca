@@ -59,6 +59,7 @@ class UserController extends Controller
                 $user->surname = $params_array['surname'];
                 $user->email = $params_array['email'];
                 $user->password = $pwd;
+                $user->telephone = $params_array['telephone'];
                 $user->role = isset($params_array['role']) ? $params_array['role'] : 'ROLE_USER';
 
                 // Guardar el usuario

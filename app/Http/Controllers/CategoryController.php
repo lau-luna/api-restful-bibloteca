@@ -192,4 +192,27 @@ class CategoryController extends Controller
 
         return response()->json($data, $data['code']);
     }
+
+    // Buscar un category por su nombre
+    public function search(Request $request)
+    {
+        $name = $request->query('name');
+        $category = Category::where('name', 'LIKE', '%' . $name . '%')->get();
+
+        if ($category->isNotEmpty()) {
+            $data = [
+                'code'    => 200,
+                'status'  => 'success',
+                'authors' => $category
+            ];
+        } else {
+            $data = [
+                'code'    => 404,
+                'status'  => 'error',
+                'message' => 'No se encontró ninguna categoría.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);
+    }
 }

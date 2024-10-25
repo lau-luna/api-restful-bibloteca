@@ -24,14 +24,6 @@ class AuthorController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -227,6 +219,8 @@ class AuthorController extends Controller
         return response()->json($data, $data['code']);
     }
 
+
+    // Buscar un autor por su nombre
     public function search(Request $request)
     {
         $name = $request->query('name');

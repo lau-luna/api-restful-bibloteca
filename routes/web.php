@@ -37,12 +37,11 @@ use App\Http\Controllers\PublisherController;
     Route::middleware([ApiAuthMiddleware::class])->group(function () {
         // Rutas con ApiAuthMiddleware para todas excepto index y show
         Route::resource('/api/author', AuthorController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
-        Route::get('/api/author/search', [AuthorController::class, 'search'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
     // Rutas sin ApiAuthMiddleware para index y show
     Route::get('/api/author', [AuthorController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
-    Route::get('/api/author/{id}', [AuthorController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
-
+    Route::get('/api/author/show/{id}', [AuthorController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/author/search', [AuthorController::class, 'search'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     
     //  Rutas del controlador de categorias
     Route::middleware([ApiAuthMiddleware::class])->group(function () {
@@ -51,7 +50,8 @@ use App\Http\Controllers\PublisherController;
     });
     // Rutas sin ApiAuthMiddleware para index y show
     Route::get('/api/category', [CategoryController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
-    Route::get('/api/category/{id}', [CategoryController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/category/show/{id}', [CategoryController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/category/search', [CategoryController::class, 'search'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
 
     //  Rutas del controlador de editoriales
     Route::middleware([ApiAuthMiddleware::class])->group(function () {
