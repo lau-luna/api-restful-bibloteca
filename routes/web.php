@@ -17,7 +17,7 @@ use App\Http\Controllers\PublisherController;
     // Rutas de prueba
     Route::get('/usuario/pruebas', [Usercontroller::class, 'pruebas']);
     Route::get('/categoria/pruebas', [CategoryController::class, 'pruebas']);
-    Route::get('/entrada/pruebas', [PostController::class, 'pruebas']);
+    Route::get('/api/pruebas', [PruebasController::class, 'index']);
 
     // Rutas del controlador de usuarios
     Route::withoutMiddleware(['web', 'VerifyCsrfToken'])->group(function () {
