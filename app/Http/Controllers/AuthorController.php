@@ -70,7 +70,7 @@ class AuthorController extends Controller
                     $data = [
                         'code'      => 200,
                         'status'    => 'success',
-                        'message'   =>  'Autor creado exitosamente.',
+                        'message'   => 'Autor creado exitosamente.',
                         'author'    => $author
                     ];
                 }
@@ -80,8 +80,7 @@ class AuthorController extends Controller
                 $data = [
                     'code'      => 400,
                     'status'    => 'error',
-                    'message'   => 'No has enviando ningún autor.',
-                    'isAdmin'   => $isAdmin
+                    'message'   => 'No has enviando ningún autor.'
                 ];
             }
         } else {
@@ -121,13 +120,6 @@ class AuthorController extends Controller
         return response()->json($data, $data['code']);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -229,6 +221,28 @@ class AuthorController extends Controller
                 'code'      => 403,
                 'status'    => 'error',
                 'message'   => 'Acceso denegado. No tienes permisos para realizar esta acción.'
+            ];
+        }
+
+        return response()->json($data, $data['code']);
+    }
+
+    public function search(Request $request)
+    {
+        $name = $request->query('name');
+        $authors = Author::where('name', 'LIKE', '%' . $name . '%')->get();
+
+        if ($authors->isNotEmpty()) {
+            $data = [
+                'code'    => 200,
+                'status'  => 'success',
+                'authors' => $authors
+            ];
+        } else {
+            $data = [
+                'code'    => 404,
+                'status'  => 'error',
+                'message' => 'No se encontró ningún autor.'
             ];
         }
 

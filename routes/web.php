@@ -1,8 +1,10 @@
 <?php
 
+use App\Models\Book;
 use App\Models\Category;
 use PhpParser\Node\Expr\PostDec;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AuthorController;
@@ -31,11 +33,11 @@ use App\Http\Controllers\PublisherController;
         Route::delete('/api/user/{id}', [UserController::class, 'destroy'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
 
-
     //  Rutas del controlador de Autores
     Route::middleware([ApiAuthMiddleware::class])->group(function () {
         // Rutas con ApiAuthMiddleware para todas excepto index y show
         Route::resource('/api/author', AuthorController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+        Route::get('/api/author/search', [AuthorController::class, 'search'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     });
     // Rutas sin ApiAuthMiddleware para index y show
     Route::get('/api/author', [AuthorController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
@@ -60,6 +62,17 @@ use App\Http\Controllers\PublisherController;
     Route::get('/api/publisher', [PublisherController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     Route::get('/api/publisher/{id}', [PublisherController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
 
+    //  Rutas del controlador de libros
+    Route::middleware([ApiAuthMiddleware::class])->group(function () {
+        // Rutas con ApiAuthMiddleware para todas excepto index y show
+        Route::resource('/api/book', BookController::class)->except(['index', 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+        
+    
+    });
+    // Rutas sin ApiAuthMiddleware para index y show
+    Route::get('/api/book', [BookController::class, 'index'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+    Route::get('/api/book/{id}', [BookController::class, 'show'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+
 
     // Rutas del controlador de entradas
     Route::middleware([ApiAuthMiddleware::class])->group((function () {
@@ -72,6 +85,8 @@ use App\Http\Controllers\PublisherController;
     Route::get('/api/post/image/{filename}', [PostController::class, 'getImage'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     Route::get('/api/post/category/{id}', [PostController::class, 'getPostsByCategory'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
     Route::get('/api/post/user/{id}', [PostController::class, 'getPostsByUser'])->withoutMiddleware(['web', 'VerifyCsrfToken']);
+
+
 
 
 Route::get('/', function () {
