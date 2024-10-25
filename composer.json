@@ -8,20 +8,18 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
-        "laravel/framework": "^11.9",
-        "laravel/tinker": "^2.9",
-        "xvladqt/faker-lorem-flickr": "^1.0",
+        "php": "^8.3",
         "doctrine/dbal": "~2.3|^3.3",
-        "phpdocumentor/graphviz": "^1.0",
+        "laravel/framework": "^11.9",
+        "laravel/passport": "*",
+        "laravel/tinker": "^2.9",
         "nikic/php-parser": "^2.0|^3.0|^4.0|^5.0",
-        "firebase/php-jwt": "3.0.0"
+        "phpdocumentor/graphviz": "^1.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.26",
-        "mmo/faker-images": "^0.9.0",
         "mockery/mockery": "^1.6",
         "phpunit/phpunit": "^9.5.10"
     },
