@@ -22,9 +22,4 @@ jobs:
         FTP_USER: ${{ secrets.FTP_USER }}
         FTP_PASS: ${{ secrets.FTP_PASS }}
       run: |
-        lftp -e "set ssl:verify-certificate false" -f "
-        open $FTP_HOST
-        user $FTP_USER $FTP_PASS
-        mirror -R ./ htdocs/ --delete
-        bye
-        "
+        lftp -e "set ssl:verify-certificate false; mirror -R ./ htdocs/ --delete; bye" -u $FTP_USER,$FTP_PASS $FTP_HOST
