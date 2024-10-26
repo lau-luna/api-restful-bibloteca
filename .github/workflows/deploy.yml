@@ -18,8 +18,11 @@ jobs:
 
     - name: Deploy to FTP
       env:
-        FTP_HOST: ${{ secrets.FTP_HOST }}
-        FTP_USER: ${{ secrets.FTP_USER }}
-        FTP_PASS: ${{ secrets.FTP_PASS }}
+        FTP_HOST: ${{ secrets.FTP_HOST }}  # Usa el secreto configurado
+        FTP_USER: ${{ secrets.FTP_USER }}  # Usa el secreto configurado
+        FTP_PASS: ${{ secrets.FTP_PASS }}  # Usa el secreto configurado
       run: |
-        lftp -e "set ssl:verify-certificate false; mirror -R ./ htdocs/ --delete; bye" -u $FTP_USER,$FTP_PASS $FTP_HOST
+        lftp -e "set ssl:verify-certificate false; \
+                  mirror -R ./public/ htdocs/ --delete; \
+                  mirror -R ./laravel/ htdocs/laravel/ --delete; \
+                  bye" -u $FTP_USER,$FTP_PASS $FTP_HOST
