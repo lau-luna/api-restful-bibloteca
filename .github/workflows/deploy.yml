@@ -1,33 +1,30 @@
-name: Laravel CI/CD
+name: Deploy to InfinityFree
 
-on: [push]
+on:
+  push:
+    branches:
+      - main  # Cambia esto por la rama que uses para desplegar
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: '8.1' # Ajusta según tu versión de PHP
+    - name: Install FTP Client
+      run: sudo apt-get install -y lftp
 
-      - name: Install Composer dependencies
-        run: composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
-
-      - name: Copy .env
-        run: |
-          cp .env.example .env
-          php artisan key:generate
-
-      - name: Setup environment variables
-        env:
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-        run: |
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          
-      - name: Run database migrations
-        run: php artisan migrate --force
+    - name: Deploy to FTP
+      env:
+        FTP_HOST: 185.27.134.11  # Cambia esto por el host FTP de InfinityFree
+        FTP_USER: if0_37597323    # Cambia esto por tu nombre de usuario de FTP
+        FTP_PASS: qY6Z4UmFnp8uB    # Cambia esto por tu contraseña de FTP
+      run: |
+        lftp -f "
+        open \$FTP_HOST
+        user \$FTP_USER \$FTP_PASS
+        mirror -R ./ htdocs/ --delete
+        bye
+        "
