@@ -18,13 +18,13 @@ jobs:
 
     - name: Deploy to FTP
       env:
-        FTP_HOST: 185.27.134.11  # Cambia esto por el host FTP de InfinityFree
-        FTP_USER: if0_37597323    # Cambia esto por tu nombre de usuario de FTP
-        FTP_PASS: qY6Z4UmFnp8uB    # Cambia esto por tu contraseña de FTP
+        FTP_HOST: ${{ secrets.FTP_HOST }}   # Usar secrets
+        FTP_USER: ${{ secrets.FTP_USER }}   # Usar secrets
+        FTP_PASS: ${{ secrets.FTP_PASS }}   # Usar secrets
       run: |
         lftp -f "
-        open \$FTP_HOST
-        user \$FTP_USER \$FTP_PASS
+        open $FTP_HOST
+        user $FTP_USER $FTP_PASS
         mirror -R ./ htdocs/ --delete
         bye
         "
