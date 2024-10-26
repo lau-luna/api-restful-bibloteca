@@ -24,5 +24,5 @@ jobs:
       run: |
         lftp -e "set ssl:verify-certificate false; \
                   mirror -R ./public/ htdocs/ --delete; \
-                  mirror -R ./laravel/ htdocs/laravel/ --delete; \
+                  mirror -R ./ htdocs/laravel/ --exclude ./public/ --delete; \
                   bye" -u $FTP_USER,$FTP_PASS $FTP_HOST
