@@ -18,11 +18,11 @@ jobs:
 
     - name: Deploy to FTP
       env:
-        FTP_HOST: ${{ secrets.FTP_HOST }}   # Usar secrets
-        FTP_USER: ${{ secrets.FTP_USER }}   # Usar secrets
-        FTP_PASS: ${{ secrets.FTP_PASS }}   # Usar secrets
+        FTP_HOST: ${{ secrets.FTP_HOST }}
+        FTP_USER: ${{ secrets.FTP_USER }}
+        FTP_PASS: ${{ secrets.FTP_PASS }}
       run: |
-        lftp -f "
+        lftp -e "set ssl:verify-certificate false" -f "
         open $FTP_HOST
         user $FTP_USER $FTP_PASS
         mirror -R ./ htdocs/ --delete
